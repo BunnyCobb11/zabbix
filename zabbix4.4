@@ -42,7 +42,7 @@ services:
             MYSQL_PASSWORD: "zabbix"
             MYSQL_ROOT_PASSWORD: "root"
         volumes:
-            - "./fonts://usr/share/zabbix/assets/fonts"
+            - "./fonts:/usr/share/zabbix/assets/fonts"
         ports:
             - "80:8080"
         links:
