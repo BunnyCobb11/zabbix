@@ -1,0 +1,44 @@
+version: "4.4"
+services:
+    mysql-server:
+        image: "mysql:5.7"
+        container_name: mysql5.7
+        restart: always
+        environment:
+            MYSQL_DATABASE: "zabbix"
+            MYSQL_USER: 'zabbix'
+            MYSQL_PASS: 'zabbix'
+            MYSQL_ROOT_PASSWORD: "root"
+        volumes:
+            - "./data:/var/lib/mysql"
+            - "./conf/my.cnf:/etc/my.cnf"
+
+    zabbix-server:
+        image: "zabbix/zabbix-server-mysql:alpine-4.4-latest"
+        container_name: zabbix-server-mysql
+        restart: always
+        environment:
+            DB_SERVER_HOST: "mysql-server"
+            MYSQL_DATABASE: "zabbix"
+            MYSQL_USER: "zabbix"
+            MYSQL_PASSWORD: "zabbix" 
+            MYSQL_ROOT_PASSWORD: "root"
+        ports:
+            - "10051:10051"
+        links:
+            - mysql-server
+    zabbix-web:
+        image: "zabbix/zabbix-web-nginx-mysql:alpine-4.4-latest"
+        container_name: zabbix-web-nginx
+        restart: always
+        environment:
+            DB_SERVER_HOST: "mysql-server"
+            MYSQL_DATABASE: "zabbix"
+            MYSQL_USER: "zabbix"
+            MYSQL_PASSWORD: "zabbix"
+            MYSQL_ROOT_PASSWORD: "root"
+        ports:
+            - "80:8080"
+        links:
+            - mysql-server
+            - zabbix-server
